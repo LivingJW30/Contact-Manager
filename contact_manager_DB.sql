@@ -10,7 +10,7 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE contacts (
+CREATE TABLE CONTACTS (
     contact_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     first_name VARCHAR(50) NOT NULL,
