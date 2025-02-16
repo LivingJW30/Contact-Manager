@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (data.error === "") {
                     alert("Login successful! User ID: " + data.id);
-                    window.location.href = "Manager"; // send to the contact manager
+                    window.location.href = "contactManager.html"; // send to the contact manager
                 } else {
                     alert("Error: " + data.error);
                 }
