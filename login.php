@@ -10,8 +10,7 @@
     
     $id = 0;
     
-    // connect to the sql server
-    $conn = new mysqli("localhost", "", "", "CONTACT_MANAGER"); //need username and password from Adam
+    $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER"); //need username and password from Adam
 	if($conn->connect_error)
 	{
 		returnWithError($conn->connect_error);
