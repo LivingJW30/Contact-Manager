@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (loginForm) {
+        console.log("hi");
         loginForm.addEventListener("submit", function(event) {
             event.preventDefault();
 
