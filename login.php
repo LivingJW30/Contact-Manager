@@ -6,10 +6,11 @@
 		exists. If it exists, it returns the users ID. If they dont exist, it returns an ID of 0.
 	*/
 
-    $inData = getRequestInfo();
+    $inData = getRequestInfo(); // gets api request
     
     $id = 0;
     
+    // connect to the sql server
     $conn = new mysqli("localhost", "", "", "CONTACT_MANAGER"); //need username and password from Adam
 	if($conn->connect_error)
 	{
@@ -18,7 +19,7 @@
 	else
 	{
 		$stmt = $conn->prepare("SELECT user_id FROM users WHERE username=? AND password_hash =?");
-		$stmt->bind_param("ss", $inData[""], $inData[""]); //Depends on JSON format in JavaScript (username and password respectively)
+		$stmt->bind_param("ss", $inData["username"], $inData["password"]); //Depends on JSON format in JavaScript (username and password respectively)
 		$stmt->execute();
 		$result = $stmt->get_result();
 

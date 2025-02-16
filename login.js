@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (loginForm) {
-        console.log("hi");
+        console.log("hi") 
         loginForm.addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -22,7 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify(formData),
                 headers: { "Content-Type": "application/json" }
             })
-            .then(response => response.json())
+            .then(response => { 
+              console.log("api request failed :((")
+              response.json()
+            })
             .then(data => {
                 if (data.error === "") {
                     alert("Login successful! User ID: " + data.id);
