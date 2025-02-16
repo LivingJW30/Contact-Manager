@@ -10,7 +10,7 @@
     
     $id = 0;
     
-    $conn = new mysqli("localhost", "", "", "CONTACT_MANAGER"); //need username and password from Adam
+    $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER"); //need username and password from Adam
 	if($conn->connect_error)
 	{
 		returnWithError($conn->connect_error);
@@ -18,7 +18,7 @@
 	else
 	{
 		$stmt = $conn->prepare("SELECT user_id FROM users WHERE username=? AND password_hash =?");
-		$stmt->bind_param("ss", $inData[""], $inData[""]); //Depends on JSON format in JavaScript (username and password respectively)
+		$stmt->bind_param("ss", $inData["username"], $inData["password"]); //Depends on JSON format in JavaScript (username and password respectively)
 		$stmt->execute();
 		$result = $stmt->get_result();
 

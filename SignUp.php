@@ -8,10 +8,10 @@
     $inData = getRequestInfo();
 
     //These fields depend on JSON format in JavaScript
-    $username = $inData[""]; 
-    $password = $inData[""];
+    $username = $inData["username"]; 
+    $password = $inData["password"];
 
-    $conn = new mysqli("localhost", "", "", "CONTACT_MANAGER"); //need username and password from Adam
+    $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER"); //need username and password from Adam
 	if($conn->connect_error)
 	{
 		returnWithError($conn->connect_error);
