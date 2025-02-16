@@ -26,3 +26,7 @@ CREATE TABLE CONTACTS (
 CREATE INDEX idx_contacts_user_id ON contacts(user_id);
 CREATE INDEX idx_contacts_email ON contacts(email);
 CREATE INDEX idx_contacts_names ON contacts(last_name, first_name);
+
+CREATE USER 'Adam'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON CONTACT_MANAGER.* TO 'Adam'@'localhost';
+FLUSH PRIVILEGES;
