@@ -2,7 +2,6 @@ const urlBase = 'http://pood.zerix.org/Contact-Manager-API';
 const extension = 'php';
 
 function readCookie() {
-  console.log("document.cookie: " + document.cookie);
   let match = document.cookie.match(/userId=([^;]+)/);
   if (match) {
     userId = parseInt(match[1].trim());
@@ -10,15 +9,16 @@ function readCookie() {
     userId = -1;
   }
   
-  // If userId isn't valid, redirect to the login page
   if (userId < 0) {
-    //window.location.href = "login.html";
+    window.location.href = "login.html";
   }
-  console.log("userId: " + userId);
+  console.log("Parsed userId:", userId);
 }
+
 
 readCookie();
 
+//*************************************************
 document.addEventListener('DOMContentLoaded', function () {
   // Display initial contacts when the page loads
   fetchContacts();
@@ -51,20 +51,40 @@ function fetchContacts() {
   let jsonPayload = JSON.stringify(tmp);
 
   // Create a new XMLHttpRequest to send data to the server
+  // let xhr = new XMLHttpRequest();
+  // xhr.open("POST", url, true);
+  // xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  // // When the request is successful, parse the JSON response
+  // xhr.onreadystatechange = function () {
+  //   if (xhr.readyState === 4 && xhr.status === 200) {
+  //     let jsonObject = JSON.parse(xhr.responseText);
+  //     displayContacts(jsonObject.contacts);
+  //   }
+  // };
+
+  // // Send the JSON payload to the API endpoint
+  // xhr.send(jsonPayload);
+
   let xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-  // When the request is successful, parse the JSON response
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      let jsonObject = JSON.parse(xhr.responseText);
-      displayContacts(jsonObject.contacts);
-    }
-  };
-
-  // Send the JSON payload to the API endpoint
-  xhr.send(jsonPayload);
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
+	{
+		xhr.onreadystatechange = function() 
+		{
+			if (this.readyState == 4 && this.status == 200) 
+			{
+        let jsonObject = JSON.parse( xhr.responseText );
+				displayContacts(jsonObject.contacts);
+			}
+		};
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+    console.log("Error fetching contacts:", err.message);
+	}
 }
 
 //*************************************************
@@ -95,24 +115,37 @@ function searchContacts(query) {
 
 //*************************************************
 // Display the contacts inside the "contactsContainer" element
-// Change this to search function using 'search.php'
 function displayContacts(contacts) {
   let container = document.getElementById("contactsContainer");
   container.innerHTML = ""; // Clear any previous contacts.
 
   // Loop through each contact and create a div element
   contacts.forEach(contact => {
-    let fullName = contact.first_name + " " + contact.last_name;
+    const contactDiv = document.createElement("div");
+    contactDiv.className = "contact";
 
-    let div = document.createElement("div");
-    div.className = "contact";
+    const contactInfo = document.createElement("span");
+    let fullName = `${contact.first_name} ${contact.last_name}`;
+    contactInfo.innerHTML = `<strong>${fullName}</strong> (${contact.email})`;
+    contactDiv.appendChild(contactInfo);
 
-    // Add the contact's info and Edit/Delete buttons
-    // div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>
-    //                    <button onclick="editContact(${contact.id})">Edit</button>
-    //                    <button onclick="deleteContact(${contact.id})">Delete</button>`;
-    div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>`;
-    container.appendChild(div);
+    // // Add edit button
+    // const editBtn = document.createElement("button");
+    // editBtn.innerHTML = "Edit";
+    // editBtn.onclick = () => editContact(contact.id);
+    // contactDiv.appendChild(editBtn);
+
+    // // Add delete button
+    // const deleteBtn = document.createElement("button");
+    // deleteBtn.innerHTML = "Delete";
+    // deleteBtn.onclick = () => {
+    //   if(confirm("Are you sure you want to delete this contact?")) {
+    //     deleteContact(contact.id);
+    //   }
+    // };
+    // contactDiv.appendChild(deleteBtn);
+
+    // container.appendChild(contactDiv);
   });
 }
 
@@ -149,7 +182,7 @@ function saveContact() {
       let jsonObject = JSON.parse(xhr.responseText);
       if (jsonObject.error == "") {
         // Refresh the contacts list
-        fetchContacts("");
+        fetchContacts();
         // Reset the form
         document.getElementById("contactForm").reset();
         document.getElementById("contactId").value = "";
@@ -207,7 +240,7 @@ function deleteContact(id) {
       let jsonObject = JSON.parse(xhr.responseText);
       if (jsonObject.success) {
         // Refresh the contacts list
-        fetchContacts("");
+        fetchContacts();
       } else {
         alert(jsonObject.message);
       }
