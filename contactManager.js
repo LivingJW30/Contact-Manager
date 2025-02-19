@@ -1,16 +1,32 @@
 const urlBase = 'http://pood.zerix.org/Contact-Manager-API';
 const extension = 'php';
 
+function readCookie() {
+  console.log("document.cookie: " + document.cookie);
+  let match = document.cookie.match(/userId=([^;]+)/);
+  if (match) {
+    userId = parseInt(match[1].trim());
+  } else {
+    userId = -1;
+  }
+  
+  // If userId isn't valid, redirect to the login page
+  if (userId < 0) {
+    //window.location.href = "login.html";
+  }
+  console.log("userId: " + userId);
+}
+
+readCookie();
+
 document.addEventListener('DOMContentLoaded', function () {
   // Display initial contacts when the page loads
-  displayContacts(dummyContacts);
-  // API: fetch contacts when the page loads
-  // fetchContacts("");
+  fetchContacts();
 
   // Search button (supports partial matches on name or email)
   document.getElementById("searchBtn").addEventListener("click", function () {
     let query = document.getElementById("searchInput").value;
-    fetchContacts(query);
+      searchContacts(query);
   });
 
   // When the contact form is submitted, save (add/update) the contact
@@ -26,19 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //*************************************************
-// Fetch contacts from server
-// The API should accept a JSON payload with an optional search query
-// Change this to search function using 'search.php'
-function fetchContacts(query) {
-  // If no query is provided, default to an empty string
-  if (query === undefined) {
-    query = "";
-  }
+// Fetch contacts from server and display them
+// Change this to use the 'displayallcontacts.php' file
+function fetchContacts() {
+  let url = urlBase + '/displayallcontacts.' + extension;
 
-  let url = urlBase + '/GetContacts.' + extension;
-
-  // Create a JSON payload that includes the search query
-  let tmp = { search: query };
+  let tmp = { id: userId };
   let jsonPayload = JSON.stringify(tmp);
 
   // Create a new XMLHttpRequest to send data to the server
@@ -50,8 +59,7 @@ function fetchContacts(query) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4 && xhr.status === 200) {
       let jsonObject = JSON.parse(xhr.responseText);
-      // The server should return an object with a "results" array
-      displayContacts(jsonObject.results);
+      displayContacts(jsonObject.contacts);
     }
   };
 
@@ -60,21 +68,50 @@ function fetchContacts(query) {
 }
 
 //*************************************************
+// Search for contacts by name
+function searchContacts(query) {
+  let url = urlBase + '/search.' + extension;
+
+  let tmp = { 
+    id: userId, 
+    firstName: query,
+    lastName: query,
+    email: ""
+  };
+  let jsonPayload = JSON.stringify(tmp);
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      let jsonObject = JSON.parse(xhr.responseText);
+      displayContacts(jsonObject.contacts);
+    }
+  };
+
+  xhr.send(jsonPayload);
+}
+
+//*************************************************
 // Display the contacts inside the "contactsContainer" element
-// Change this to use the 'displayallcontacts.php' file
+// Change this to search function using 'search.php'
 function displayContacts(contacts) {
   let container = document.getElementById("contactsContainer");
   container.innerHTML = ""; // Clear any previous contacts.
 
   // Loop through each contact and create a div element
   contacts.forEach(contact => {
+    let fullName = contact.first_name + " " + contact.last_name;
+
     let div = document.createElement("div");
     div.className = "contact";
 
     // Add the contact's info and Edit/Delete buttons
-    div.innerHTML = `<span><strong>${contact.name}</strong> (${contact.email})</span>
-                       <button onclick="editContact(${contact.id})">Edit</button>
-                       <button onclick="deleteContact(${contact.id})">Delete</button>`;
+    // div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>
+    //                    <button onclick="editContact(${contact.id})">Edit</button>
+    //                    <button onclick="deleteContact(${contact.id})">Delete</button>`;
+    div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>`;
     container.appendChild(div);
   });
 }
@@ -83,18 +120,25 @@ function displayContacts(contacts) {
 // Save a contact (adding a new one or updating an existing one)
 function saveContact() {
   let contactId = document.getElementById("contactId").value;
-  let contactName = document.getElementById("contactName").value;
+  let contactFirstName = document.getElementById("contactFirstName").value;
+  let contactLastName = document.getElementById("contactLastName").value;
   let contactEmail = document.getElementById("contactEmail").value;
 
-  let tmp = { id: contactId, name: contactName, email: contactEmail };
+  let tmp = { 
+    id: contactId, 
+    firstName: contactFirstName,
+    lastName: contactLastName, 
+    email: contactEmail 
+  };
   let jsonPayload = JSON.stringify(tmp);
 
-  let url = urlBase + '/SaveContact.' + extension;
+  // If contactId is empty, it's a new contact...otherwise, it's an update
+  let url = "";
   if (contactId == "") {
-    url = urlBase + '/AddContact.' + extension;
+    url = urlBase + '/addcontact.' + extension;
   }
   else {
-    url = urlBase + '/EditContact.' + extension;
+    url = urlBase + '/editcontact.' + extension;
   }
 
   let xhr = new XMLHttpRequest();
@@ -103,14 +147,15 @@ function saveContact() {
   xhr.onereadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let jsonObject = JSON.parse(xhr.responseText);
-      if (jsonObject.success) {
+      if (jsonObject.error == "") {
         // Refresh the contacts list
         fetchContacts("");
+        // Reset the form
         document.getElementById("contactForm").reset();
         document.getElementById("contactId").value = "";
       }
       else {
-        alert(jsonObject.message);
+        alert("Error saving contact: " + jsonObject.error);
       }
     }
   };
@@ -121,7 +166,7 @@ function saveContact() {
 
 // Edit a contact by fetching the contact details and populate the form
 function editContact(id) {
-  let url = urlBase + '/GetContact.' + extension;
+  let url = urlBase + '/editcontact.' + extension;
   let tmp = { id: id };
   let jsonPayload = JSON.stringify(tmp);
 
@@ -150,7 +195,7 @@ function deleteContact(id) {
     return;
   }
 
-  let url = urlBase + '/DeleteContact.' + extension;
+  let url = urlBase + '/deletecontact.' + extension;
   let tmp = { id: id };
   let jsonPayload = JSON.stringify(tmp);
 
@@ -173,22 +218,7 @@ function deleteContact(id) {
 //*************************************************
 // Logout function
 function logout() {
-  let url = urlBase + '/Logout.' + extension;
-
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  xhr.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let jsonObject = JSON.parse(xhr.responseText);
-      if (jsonObject.success) {
-        alert("Logged out!");
-        window.location.href = "login.html";
-      }
-      else {
-        alert(jsonObject.message);
-      }
-    }
-  };
-  xhr.send();
+  // Clear the userId and redirect to the login page
+  userId = 0;
+  window.location.href = "login.html";
 }
