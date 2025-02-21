@@ -9,7 +9,7 @@
     $inData = getRequestInfo(); //Collects information from Front End
 
 	//Connects to database
-    $conn = new mysqli("localhost", "Adam", "password", "COP4331");
+    $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER");
 	if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );

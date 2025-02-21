@@ -10,7 +10,7 @@
     $contact_id = $inData["contactId"]; //Pre Defined JSON Values (can change later if needed)
 
 	//Connects to database
-    $conn = new mysqli("localhost", "Adam", "password", "COP4331");
+    $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER");
 	if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );
@@ -22,11 +22,17 @@
 		$stmt->bind_param("s", $contact_id);
 		$stmt->execute();
 
-		//I could modify this code to throw an error if the contact doesnt delete but im keeping it like this for now
+		if($stmt->affected_rows === 0)
+		{
+			returnWithError("Delete failed");
+		}
+		else
+		{
+			returnWithError(""); //An error with a value of "" indicates success
+		}
 
 		$stmt->close();
 		$conn->close();
-		returnWithError(""); //An error with a value of "" indicates success
 	}
 
     function getRequestInfo()

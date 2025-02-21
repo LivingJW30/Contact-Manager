@@ -14,7 +14,7 @@
     $email = $inData["email"];
 
 	//Connects to database
-	$conn = new mysqli("localhost", "Adam", "password", "COP4331");
+	$conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER");
 	if ($conn->connect_error) 
 	{
 		returnWithError( $conn->connect_error );
@@ -25,12 +25,18 @@
 		$stmt = $conn->prepare("INSERT into CONTACTS (user_id, first_name, last_name, email) VALUES(?,?,?,?)");
 		$stmt->bind_param("ssss", $user_id, $firstName, $lastName, $email);
 		$stmt->execute();
-
-		//I could modify this code to throw an error if the contact doesnt add but im keeping it like this for now
+		
+		if($stmt->affected_rows === 0)
+		{
+			returnWithError("Add failed");
+		}
+		else
+		{
+			returnWithError(""); //An error with a value of "" indicates success
+		}
 
 		$stmt->close();
 		$conn->close();
-		returnWithError(""); //An error with a value of "" indicates success
 	}
 
 	function getRequestInfo()

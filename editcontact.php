@@ -8,7 +8,7 @@
     $inData = getRequestInfo(); //Collects information from Front End
 
 	//Connects to database
-    $conn =  $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER");
+    $conn = new mysqli("localhost", "team", "team_pass", "CONTACT_MANAGER");
     if($conn->connect_error)
     {
         returnWithError($conn->connect_error);
@@ -16,15 +16,21 @@
     else
     {
 		//Preparing and executing SQL statement
-        $stmt = $conn->prepare("UPDATE CONTACTS SET first_name =?, last_name =?, email=? where contact_id=?");
+        $stmt = $conn->prepare("UPDATE CONTACTS SET first_name =?, last_name =?, email=? WHERE contact_id=?");
 		$stmt->bind_param("ssss", $inData["firstName"], $inData["lastName"], $inData["email"], $inData["contactId"]); //Pre Defined JSON Values (can change later if needed)
 		$stmt->execute(); 
 
-		//I could modify this code to throw an error if the contact doesnt edit but im keeping it like this for now
+		if($stmt->affected_rows === 0) //May also throw this if values are the same. I can either keep it to throw one error or change it to throw different errors
+		{
+			returnWithError("Edit failed");
+		}
+		else
+		{
+			returnWithError(""); //An error with a value of "" indicates success
+		}
 
         $stmt->close();
-		$conn->close();
-		returnWithError(""); //An error with a value of "" indicates success
+		$conn->close(); 
     }
     
     function getRequestInfo()

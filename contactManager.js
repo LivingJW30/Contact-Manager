@@ -49,7 +49,7 @@ function displayContacts(contacts) {
   }
 
   contacts.forEach(contact => {
-    let fullName = `${contact.firstName} ${contact.lastName}`;
+    let fullName = contact.first_name + " " + contact.last_name;
     let div = document.createElement("div");
     div.className = "contact";
     div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>
@@ -88,6 +88,11 @@ function fetchContacts() {
 //*************************************************
 // Search for contacts by name
 function searchContacts(query) {
+  if (query == "") {
+    fetchContacts();
+    return;
+  }
+
   let payload = { 
     id: userId,
     firstName: query,
@@ -123,12 +128,27 @@ function saveContact() {
   let contactLastName = document.getElementById("contactLastName").value;
   let contactEmail = document.getElementById("contactEmail").value;
 
-  let payload = { 
-    id: contactId, 
-    firstName: contactFirstName,
-    lastName: contactLastName, 
-    email: contactEmail 
-  };
+  let payload = {}
+
+  // Adding a new contact, pass userId
+  if (contactId == "") {
+    payload = { 
+      id: userId,
+      firstName: contactFirstName,
+      lastName: contactLastName, 
+      email: contactEmail 
+    };
+  } else {
+    payload = { 
+      id: contactId, 
+      firstName: contactFirstName,
+      lastName: contactLastName, 
+      email: contactEmail 
+    };
+  }
+
+  console.log("Payload:", payload);
+
   let apiFile = (contactId == "") ? "addcontact.php" : "editcontact.php";
 
   fetch(apiFile, {
