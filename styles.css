@@ -55,7 +55,6 @@ button {
     margin-top: 10px;
 }
 
-
 .input-label {
     align-self: flex-start;
     margin-bottom: 5px;
@@ -66,4 +65,3 @@ button:hover {
     background-color: #BF3475;
     color: white;
 }
-
