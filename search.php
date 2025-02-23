@@ -22,7 +22,7 @@
     else
     {
         //Preparing and executing SQL statement
-        $stmt = $conn->prepare("SELECT first_name, last_name, email, contact_id from CONTACTS WHERE user_id =? AND (first_name LIKE ? AND last_name LIKE ? AND email LIKE ?)");
+        $stmt = $conn->prepare("SELECT first_name, last_name, email, contact_id from CONTACTS WHERE user_id =? AND (first_name LIKE ? OR last_name LIKE ? AND email LIKE ?)");
         $stmt->bind_param("ssss", $userID, $firstName, $lastName, $email); //Pre Defined JSON Values (can change later if needed)
         $stmt->execute();
 		$result = $stmt->get_result();
