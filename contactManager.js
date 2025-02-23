@@ -52,9 +52,9 @@ function displayContacts(contacts) {
     let fullName = contact.first_name + " " + contact.last_name;
     let div = document.createElement("div");
     div.className = "contact";
-    div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>
-                     <button onclick="editContact(${contact.id})">Edit</button>
-                     <button onclick="deleteContact(${contact.id})">Delete</button>`;
+    div.innerHTML = `<span>Contact_ID: ${contact.contact_id}<strong>${fullName}</strong> (${contact.email})</span>
+                     <button onclick="editContact(${contact.contact_id})">Edit</button>
+                     <button onclick="deleteContact(${contact.contact_id})">Delete</button>`;
     container.appendChild(div);
   });
 }
@@ -139,11 +139,12 @@ function saveContact() {
       email: contactEmail 
     };
   } else {
-    payload = { 
-      id: contactId, 
+    // Edit contact
+    payload = {  
       firstName: contactFirstName,
       lastName: contactLastName, 
-      email: contactEmail 
+      email: contactEmail,
+      contactId: contactId
     };
   }
 
@@ -179,8 +180,8 @@ function saveContact() {
 
 //*************************************************
 // Edit a contact (load the contact info into the form)
-function editContact(id) {
-  let payload = { id: id };
+function editContact(contact_id) {
+  let payload = { contactId: contact_id };
 
   fetch("editcontact.php", {
     method: "POST",
@@ -200,7 +201,7 @@ function editContact(id) {
       document.getElementById("contactLastName").value = data.lastName;
       document.getElementById("contactEmail").value = data.email;
     } else {
-      alert("Error getting contact: " + data.error);
+      alert("Error getting contact: " + contact_id);
     }
   })
   .catch(error => {
@@ -211,12 +212,12 @@ function editContact(id) {
 
 //*************************************************
 // delete a contact (ask for confirm before deleting)
-function deleteContact(id) {
+function deleteContact(contact_id) {
   if (!confirm("Are you sure you want to delete this contact?")) {
     return;
   }
 
-  let payload = { id: id };
+  let payload = { contactId: contact_id };
 
   fetch("deletecontact.php", {
     method: "POST",
@@ -233,7 +234,7 @@ function deleteContact(id) {
     if (data.error == "") {
       fetchContacts();
     } else {
-      alert("Error deleting contact: " + data.error);
+      alert("Error deleting contact: " + contact_id);
     }
   })
   .catch(error => {
@@ -246,6 +247,6 @@ function deleteContact(id) {
 // Logout function
 function logout() {
   // Clear the userId and redirect to the login page
-  userId = 0;
+  userId = -1;
   window.location.href = "login.html";
 }
