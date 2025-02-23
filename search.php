@@ -7,6 +7,11 @@
 	*/
 
     $inData = getRequestInfo(); //Collects information from Front End
+
+    $userID = $inData["id"];
+    $firstName = "%" . $inData["firstName"] . "%";
+    $lastName = "%" . $inData["lastName"] . "%";
+    $email = "%" . $inData["email"] . "%";
     
     //Connects to database
     $conn = new mysqli("localhost", "Adam", "password", "CONTACT_MANAGER");
@@ -17,20 +22,23 @@
     else
     {
         //Preparing and executing SQL statement
-        $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email from CONTACTS where user_id=? AND first_name=? AND last_name=? AND email=?");
-        $stmt->bind_param("ssss", $inData["id"], $inData["firstName"], $inData["lastName"], $inData["email"]); //Pre Defined JSON Values (can change later if needed)
+        $stmt = $conn->prepare("SELECT first_name, last_name, email, contact_id from CONTACTS WHERE user_id =? AND (first_name LIKE ? AND last_name LIKE ? AND email LIKE ?)");
+        $stmt->bind_param("ssss", $userID, $firstName, $lastName, $email); //Pre Defined JSON Values (can change later if needed)
         $stmt->execute();
 		$result = $stmt->get_result();
 
-        //Fetches result and returns the values
-        if($row = $result->fetch_assoc())
-        {
-            returnWithInfo($row["user_id"], $row["first_name"], $row["last_name"], $row["email"]);
-        }
-        else
-        {
-            returnWithError("No Records Found");
-        }
+        $contacts = [];
+
+		// Fetch all rows and store them in an array
+		while ($row = $result->fetch_assoc()) {
+			$contacts[] = $row;
+		}
+        
+		if (count($contacts) > 0) {
+			returnWithInfo($contacts);
+		} else {
+			returnWithError("No Contacts");
+		}
 
         $stmt->close();
 		$conn->close();
@@ -55,10 +63,10 @@
     	sendResultInfoAsJson($retValue);
 	}
 	
-    //Converts the new values into JSON Format
-	function returnWithInfo( $id, $firstName, $lastName, $email)
+    //Returns new array as JSON to the Front End
+	function returnWithInfo($contacts)
 	{
-		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","email":"' . $email . '","error":""}';
-		sendResultInfoAsJson( $retValue );
+		$retValue = json_encode(["contacts" => $contacts, "error" => ""]);
+		sendResultInfoAsJson($retValue);
 	}
 ?>

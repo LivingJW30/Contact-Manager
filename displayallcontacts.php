@@ -17,7 +17,7 @@
 	else
 	{
 		//Preparing and executing SQL statement
-		$stmt = $conn->prepare("SELECT first_name, last_name, email FROM CONTACTS WHERE user_id=?");
+		$stmt = $conn->prepare("SELECT first_name, last_name, email, contact_id FROM CONTACTS WHERE user_id=?");
 		$stmt->bind_param("s", $inData["id"]); //Pre Defined JSON Values (can change later if needed)
 		$stmt->execute();
 		$result = $stmt->get_result();

@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     userId = data.id;
                     saveCookie();
                     alert("Login successful! User ID: " + userId);
-                    //window.location.href = "contactManager.html";
+                    window.location.href = "contactManager.html";
                 } else {
                     alert("Error: " + data.error);
                 }
