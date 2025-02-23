@@ -183,7 +183,7 @@ function saveContact() {
 function editContact(contact_id) {
   let payload = { contactId: contact_id };
 
-  fetch("editcontact.php", {
+  fetch("getContact.php", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
