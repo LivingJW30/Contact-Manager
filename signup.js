@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (data.error === "") {
                     alert("Signup successful!");
-                    window.location.href = "login.html";
+                    window.location.href = "./login.html";
                 } else {
                     alert("Error: " + data.error);
                 }

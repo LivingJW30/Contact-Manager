@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Manager</title>
+  <link rel="stylesheet" href="contact-styles.css">
+</head>
+
+<body>
+  <header>
+    <h1>Contact Manager</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <main>
+    <!-- Container for displaying contacts -->
+    <section id="contact-list-section">
+      <h2>Your Contacts</h2>
+      <input type="text" id="searchInput" placeholder="Search contacts...">
+      <button id="searchBtn">Search</button>
+      <!-- This is where contacts will appear -->
+      <div id="contactsContainer"></div>
+    </section>
+
+    <!-- Form for adding/editing contacts -->
+    <section id="contact-form-section">
+      <h2>Add/Edit Contact</h2>
+      <form id="contactForm">
+        <!-- Hidden field to store the contact id -->
+        <input type="hidden" id="contactId" value="">
+        <label for="contactFirstName">First Name:</label>
+        <input type="text" id="contactFirstName" required>
+        <label for="contactLastName">Last Name:</label>
+        <input type="text" id="contactLastName" required>
+        <label for="contactEmail">Email:</label>
+        <input type="email" id="contactEmail" required>
+        <button type="submit">Save Contact</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="contactManager.js"></script>
+</body>
+
+</html>

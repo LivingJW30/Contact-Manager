@@ -1,3 +1,11 @@
+function saveCookie() {
+    let minutes = 20;
+    let date = new Date();
+    date.setTime(date.getTime() + minutes * 60 * 1000);
+    document.cookie = "userId=" + userId + "; expires=" + date.toUTCString() + "; path=/; SameSite=Lax";
+    console.log("Cookie saved:",  document.cookie);
+}  
+
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("login-form");
     const signupBtn = document.getElementById("signup-btn");
@@ -33,7 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
             // success
             .then(data => {
                 if (data.error === "") {
-                    alert("Login successful! User ID: " + data.id);
+                    // change here: defines userId to get contacts
+                    userId = data.id;
+                    saveCookie();
+                    alert("Login successful! User ID: " + userId);
                     window.location.href = "contactManager.html";
                 } else {
                     alert("Error: " + data.error);
