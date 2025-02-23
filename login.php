@@ -6,7 +6,7 @@
 		exists. If it exists, it returns the users ID. If they dont exist, it returns an ID of 0.
 	*/
 
-    $inData = getRequestInfo();
+    $inData = getRequestInfo(); // gets api request
     
     $id = 0;
     

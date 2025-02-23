@@ -23,6 +23,11 @@ CREATE TABLE CONTACTS (
 );
 
 
-CREATE INDEX idx_contacts_user_id ON contacts(user_id);
-CREATE INDEX idx_contacts_email ON contacts(email);
-CREATE INDEX idx_contacts_names ON contacts(last_name, first_name);
+CREATE INDEX idx_CONTACTS_user_id ON contacts(user_id);
+CREATE INDEX idx_CONTACTS_email ON contacts(email);
+CREATE INDEX idx_CONTACTS_names ON contacts(last_name, first_name);
+
+CREATE USER 'team'@'%' IDENTIFIED BY 'team_pass';
+GRANT ALL PRIVILEGES ON CONTACT_MANAGER.* TO 'team'@'%';
+
+FLUSH PRIVILEGES;

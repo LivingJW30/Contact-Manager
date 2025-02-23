@@ -10,7 +10,11 @@ body {
 }
 
 .login-container {
+<<<<<<< HEAD
     background-color: #ffffff78;
+=======
+    background-color: #fff;
+>>>>>>> main
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -42,7 +46,11 @@ form {
 button {
     width: 100%;
     padding: 10px;
+<<<<<<< HEAD
     background-color: #50366F;
+=======
+    background-color: #4CAF50;
+>>>>>>> main
     color: white;
     border: none;
     border-radius: 4px;
@@ -55,6 +63,7 @@ button {
     margin-top: 10px;
 }
 
+<<<<<<< HEAD
 .input-label {
     align-self: flex-start;
     margin-bottom: 5px;
@@ -66,3 +75,5 @@ button:hover {
     color: white;
 }
 
+=======
+>>>>>>> main
