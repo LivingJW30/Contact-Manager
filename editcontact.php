@@ -22,7 +22,15 @@
 
 		if($stmt->affected_rows === 0) //May also throw this if values are the same. I can either keep it to throw one error or change it to throw different errors
 		{
-			returnWithError("Edit failed");
+			$info = $conn->info;
+			if (strpos($info, "Rows matched: 0") !== false) 
+			{
+				returnWithError("No contact found");
+			} 
+			else 
+			{
+				returnWithError("Values are Identical");
+			}
 		}
 		else
 		{

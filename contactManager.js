@@ -130,6 +130,7 @@ function saveContact() {
 
   let payload = {}
 
+
   // Adding a new contact, pass userId
   if (contactId == "") {
     payload = { 
@@ -169,6 +170,7 @@ function saveContact() {
       document.getElementById("contactForm").reset();
       document.getElementById("contactId").value = "";
     } else {
+      console.log(data);
       alert("Error saving contact: " + data.error);
     }
   })
@@ -196,7 +198,8 @@ function editContact(contact_id) {
   })
   .then(data => {
     if (data.error == "") {
-      document.getElementById("contactId").value = data.id;
+      console.log(data);
+      document.getElementById("contactId").value = contact_id;
       document.getElementById("contactFirstName").value = data.firstName;
       document.getElementById("contactLastName").value = data.lastName;
       document.getElementById("contactEmail").value = data.email;
