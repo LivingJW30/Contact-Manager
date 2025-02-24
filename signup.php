@@ -21,9 +21,26 @@
         $stmt = $conn->prepare("INSERT into users (username,password_hash) VALUES(?,?)");
         $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
+
+		//Error checking
+		if (!$stmt->execute()) 
+		{
+    		if ($stmt->errno == 1062) // Duplicate entry error 
+			{ 
+        		returnWithError("Username Already Exists. Please Try Again.");
+			}
+			else
+			{
+				returnWithError("Signup Failed. Please Try Again.");
+			}
+		}
+		else
+		{
+			returnWithError("");
+		}
+
 		$stmt->close();
 		$conn->close();
-		returnWithError("");
 	}
 
 
