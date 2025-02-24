@@ -52,7 +52,7 @@ function displayContacts(contacts) {
     let fullName = contact.first_name + " " + contact.last_name;
     let div = document.createElement("div");
     div.className = "contact";
-    div.innerHTML = `<span>Contact_ID: ${contact.contact_id}<strong>${fullName}</strong> (${contact.email})</span>
+    div.innerHTML = `<span><strong>${fullName}</strong> (${contact.email})</span>
                      <button onclick="editContact(${contact.contact_id})">Edit</button>
                      <button onclick="deleteContact(${contact.contact_id})">Delete</button>`;
     container.appendChild(div);
