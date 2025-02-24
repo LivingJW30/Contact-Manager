@@ -20,7 +20,6 @@
 	{
         $stmt = $conn->prepare("INSERT into users (username,password_hash) VALUES(?,?)");
         $stmt->bind_param("ss", $username, $password);
-        $stmt->execute();
 
 		//Error checking
 		if (!$stmt->execute()) 
