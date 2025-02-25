@@ -18,24 +18,21 @@
 	}
 	else
 	{
-        $stmt = $conn->prepare("INSERT into users (username,password_hash) VALUES(?,?)");
+        $stmt = $conn->prepare("INSERT into users (username, password_hash) VALUES(?,?)");
         $stmt->bind_param("ss", $username, $password);
-
-		//Error checking
-		if (!$stmt->execute()) 
-		{
-    		if ($stmt->errno == 1062) // Duplicate entry error 
-			{ 
-        		returnWithError("Username Already Exists. Please Try Again.");
+		
+		try {
+			if (!$stmt->execute()) {
+				if ($stmt->errno == 1062) { 
+					throw new Exception("Username Already Exists. Please Try Again.");
+				} else {
+					throw new Exception("Signup Failed: " . $stmt->error);
+				}
+			} else {
+				returnWithError("");
 			}
-			else
-			{
-				returnWithError("Signup Failed. Please Try Again.");
-			}
-		}
-		else
-		{
-			returnWithError("");
+		} catch (Exception $e) {
+			returnWithError($e->getMessage());
 		}
 
 		$stmt->close();
