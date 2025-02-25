@@ -21,16 +21,24 @@
         $stmt = $conn->prepare("INSERT into users (username, password_hash) VALUES(?,?)");
         $stmt->bind_param("ss", $username, $password);
 		
+		
 		try 
 		{
 			if ($stmt->execute()) 
 			{
-				returnWithError("");
+				returnWithError(""); //An error with "" indicates success
 			}
 		} 
 		catch (Exception $e) 
 		{
-			returnWithError("Username already exists. Please try again.");
+			if ($e->getCode() == 1062) 
+			{
+				returnWithError("Username already exists. Please try again.");
+			} 
+			else 
+			{
+				returnWithError("Signup failed: " . $e->getMessage());
+			}
 		}
 
 		$stmt->close();
