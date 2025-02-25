@@ -93,3 +93,11 @@ input[type="text"]{
 #contactsContainer .contact:last-child {
   border-bottom: none;
 }
+
+#contactsContainer .contact span {
+  flex-grow: 1; 
+}
+
+#contactsContainer .contact button {
+  margin-left: 1rem; 
+}
