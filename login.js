@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     // change here: defines userId to get contacts
                     userId = data.id;
                     saveCookie();
-                    alert("Login successful! User ID: " + userId);
                     window.location.href = "contactManager.html";
                 } else {
                     alert("Error: " + data.error);
